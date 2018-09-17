@@ -42,7 +42,7 @@ async function getStaticMappingFromBankroll(BankrollMapping, MappingId){
   });
 };
 
-const EOSBetBankroll = {
+const wonderbetBankroll = {
   web3Provider: null,
   Bankroll: null,
   bankrollInstance: null,
@@ -56,28 +56,28 @@ const EOSBetBankroll = {
   currentContractBankrollBalance: null,
 
   init: function() {
-    EOSBetBankroll.initWeb3();
-    EOSBetBankroll.bindInitialEvents();
+    wonderbetBankroll.initWeb3();
+    wonderbetBankroll.bindInitialEvents();
   },
 
   initWeb3: function() {
     setTimeout(function(){
       if (typeof web3 !== 'undefined'){
         console.log('getting web3');
-        EOSBetBankroll.web3Provider = web3.currentProvider;
+        wonderbetBankroll.web3Provider = web3.currentProvider;
 
         web3.version.getNetwork((error, result) => {
           if (error || result !== '1'){
-            launchWrongNetworkModal('EOSBet Proof-of-Concept Bankroll');
+            launchWrongNetworkModal('wonderbet Proof-of-Concept Bankroll');
             return;
           }
           else {
-            return EOSBetBankroll.initContract(web3);
+            return wonderbetBankroll.initContract(web3);
           }
         });
       }
       else {
-        launchNoMetaMaskModal('EOSBet Proof-of-Concept Bankroll');
+        launchNoMetaMaskModal('wonderbet Proof-of-Concept Bankroll');
         return;
       }
     }, 500);
@@ -88,50 +88,50 @@ const EOSBetBankroll = {
       // get contract ABI and init
       var bankrollAbi = data;
       // rinkeby: 0x6ce0f38DB787434f2ED0C7DE8C61be2FAAe87f32
-      EOSBetBankroll.Bankroll = web3.eth.contract(bankrollAbi);
-      EOSBetBankroll.bankrollInstance = EOSBetBankroll.Bankroll.at('0x06adBa5ad6c494e536CAd8afA1129AB9F7Cb99bF');
+      wonderbetBankroll.Bankroll = web3.eth.contract(bankrollAbi);
+      wonderbetBankroll.bankrollInstance = wonderbetBankroll.Bankroll.at('0x06adBa5ad6c494e536CAd8afA1129AB9F7Cb99bF');
 
-      return EOSBetBankroll.getUserDetails(web3);
+      return wonderbetBankroll.getUserDetails(web3);
 
     });
   },
 
   bindInitialEvents: function(){
     $('#withdraw').click(function() {
-      EOSBetBankroll.withdraw(false);
+      wonderbetBankroll.withdraw(false);
     });
     $('#deposit').click(function() {
-      EOSBetBankroll.deposit();
+      wonderbetBankroll.deposit();
     });
     $('#withdraw-all').click(function(){
-      EOSBetBankroll.withdraw(true);
+      wonderbetBankroll.withdraw(true);
     });
   },
 
   getUserDetails: function(web3){
     var accounts = web3.eth.accounts;
     if (accounts.length === 0){
-      launchNoLoginModal('EOSBet Proof-of-Concept Bankroll');
+      launchNoLoginModal('wonderbet Proof-of-Concept Bankroll');
     }
 
-    return EOSBetBankroll.getContractDetails(web3);
+    return wonderbetBankroll.getContractDetails(web3);
   },
 
   getContractDetails: async function(web3){
     // first get the withdrawl details
     try {
-      EOSBetBankroll.currentTotalBankrollBalance = await getStaticValueFromBankroll(EOSBetBankroll.bankrollInstance.getBankroll);
-      EOSBetBankroll.currentTotalTokenSupply = await getStaticValueFromBankroll(EOSBetBankroll.bankrollInstance.totalSupply);
-      EOSBetBankroll.currentUserTokenSupply = await getStaticMappingFromBankroll(EOSBetBankroll.bankrollInstance.balanceOf, web3.eth.accounts[0]);
+      wonderbetBankroll.currentTotalBankrollBalance = await getStaticValueFromBankroll(wonderbetBankroll.bankrollInstance.getBankroll);
+      wonderbetBankroll.currentTotalTokenSupply = await getStaticValueFromBankroll(wonderbetBankroll.bankrollInstance.totalSupply);
+      wonderbetBankroll.currentUserTokenSupply = await getStaticMappingFromBankroll(wonderbetBankroll.bankrollInstance.balanceOf, web3.eth.accounts[0]);
       // calculate value of tokens given these values
-      EOSBetBankroll.currentUserTokenValue = EOSBetBankroll.currentTotalBankrollBalance.times(EOSBetBankroll.currentUserTokenSupply).dividedBy(EOSBetBankroll.currentTotalTokenSupply);
+      wonderbetBankroll.currentUserTokenValue = wonderbetBankroll.currentTotalBankrollBalance.times(wonderbetBankroll.currentUserTokenSupply).dividedBy(wonderbetBankroll.currentTotalTokenSupply);
 
-      $('#current-tokens').text(web3.fromWei(EOSBetBankroll.currentUserTokenSupply, 'ether'));
-      $('#current-tokens-value').text(isNaN(EOSBetBankroll.currentUserTokenValue) ? 0 : web3.fromWei(EOSBetBankroll.currentUserTokenValue, 'ether'));
+      $('#current-tokens').text(web3.fromWei(wonderbetBankroll.currentUserTokenSupply, 'ether'));
+      $('#current-tokens-value').text(isNaN(wonderbetBankroll.currentUserTokenValue) ? 0 : web3.fromWei(wonderbetBankroll.currentUserTokenValue, 'ether'));
 
-      if (EOSBetBankroll.currentUserTokenSupply.greaterThan(0)){
-        var mandatoryWaitTime = parseInt(await getStaticValueFromBankroll(EOSBetBankroll.bankrollInstance.WAITTIMEUNTILWITHDRAWORTRANSFER), 10);
-        var usersContributionTime = parseInt(await getStaticMappingFromBankroll(EOSBetBankroll.bankrollInstance.checkWhenContributorCanTransferOrWithdraw, web3.eth.accounts[0]), 10);
+      if (wonderbetBankroll.currentUserTokenSupply.greaterThan(0)){
+        var mandatoryWaitTime = parseInt(await getStaticValueFromBankroll(wonderbetBankroll.bankrollInstance.WAITTIMEUNTILWITHDRAWORTRANSFER), 10);
+        var usersContributionTime = parseInt(await getStaticMappingFromBankroll(wonderbetBankroll.bankrollInstance.checkWhenContributorCanTransferOrWithdraw, web3.eth.accounts[0]), 10);
 
         var thisTime = Math.floor(Date.now() / 1000);
 
@@ -161,19 +161,19 @@ const EOSBetBankroll = {
       }
 
       // now get the deposit details
-      EOSBetBankroll.maximumBankrollContributions = await getStaticValueFromBankroll(EOSBetBankroll.bankrollInstance.MAXIMUMINVESTMENTSALLOWED);
+      wonderbetBankroll.maximumBankrollContributions = await getStaticValueFromBankroll(wonderbetBankroll.bankrollInstance.MAXIMUMINVESTMENTSALLOWED);
       // determine how much the user can contribute
       var youCanContribute;
-      if (EOSBetBankroll.maximumBankrollContributions.lessThan(EOSBetBankroll.currentTotalBankrollBalance)){
+      if (wonderbetBankroll.maximumBankrollContributions.lessThan(wonderbetBankroll.currentTotalBankrollBalance)){
         youCanContribute = 0;
       }
       else {
-        youCanContribute = EOSBetBankroll.maximumBankrollContributions.minus(EOSBetBankroll.currentTotalBankrollBalance);
+        youCanContribute = wonderbetBankroll.maximumBankrollContributions.minus(wonderbetBankroll.currentTotalBankrollBalance);
       }
       // update the UI with this info
-      $('#current-ether').text(web3.fromWei(EOSBetBankroll.currentTotalBankrollBalance, 'ether'));
+      $('#current-ether').text(web3.fromWei(wonderbetBankroll.currentTotalBankrollBalance, 'ether'));
       $('#contributable-ether').text(web3.fromWei(youCanContribute, 'ether'));
-      $('#ether-cap').text(web3.fromWei(EOSBetBankroll.maximumBankrollContributions, 'ether'));
+      $('#ether-cap').text(web3.fromWei(wonderbetBankroll.maximumBankrollContributions, 'ether'));
 
       $('#deposit-info').show();
       $('#deposit-info').html('MAX: ' + web3.fromWei(youCanContribute, 'ether') + ' ether.');
@@ -187,7 +187,7 @@ const EOSBetBankroll = {
   deposit: function(){
     var depositAmt = $('#deposit-amt').val();
 
-    web3.eth.sendTransaction({to: EOSBetBankroll.bankrollInstance.address, from: web3.eth.accounts[0], value: web3.toWei(depositAmt, 'ether')}, async function(error, result){
+    web3.eth.sendTransaction({to: wonderbetBankroll.bankrollInstance.address, from: web3.eth.accounts[0], value: web3.toWei(depositAmt, 'ether')}, async function(error, result){
       if (error){
         console.log('error while depositing ether to fallback', error);
       }
@@ -208,7 +208,7 @@ const EOSBetBankroll = {
           var amountEther = parseInt(data.slice(66, 130), 16).toString();
           var amountTokens = parseInt(data.slice(130, 194), 16).toString();
           $('#deposit-info').removeClass('alert-default').addClass('alert-success');
-          $('#deposit-info').html('You have successfully deposited ' + web3.fromWei(amountEther, 'ether') + ' ether to our bankroll and have been given ' + web3.fromWei(amountTokens, 'ether') + ' EOSBet Stake Tokens! Thank you for contributing to the EOSBet Bankroll.');
+          $('#deposit-info').html('You have successfully deposited ' + web3.fromWei(amountEther, 'ether') + ' ether to our bankroll and have been given ' + web3.fromWei(amountTokens, 'ether') + ' wonderbet Stake Tokens! Thank you for contributing to the wonderbet Bankroll.');
         }
       }
     });
@@ -216,13 +216,13 @@ const EOSBetBankroll = {
 
   withdraw: function(all){
     if (all === true){
-      // withdraw all tokens, use smart contract function cashoutEOSBetStakeTokens_ALL
-      EOSBetBankroll.bankrollInstance.cashoutEOSBetStakeTokens_ALL({from: web3.eth.accounts[0]}, async function(error, result){
+      // withdraw all tokens, use smart contract function cashoutwonderbetStakeTokens_ALL
+      wonderbetBankroll.bankrollInstance.cashoutwonderbetStakeTokens_ALL({from: web3.eth.accounts[0]}, async function(error, result){
         if (error){
-          console.log('error while withdrawing all EOSBET Stake tokens', error);
+          console.log('error while withdrawing all wonderbet Stake tokens', error);
         }
         else {
-          await EOSBetBankroll.parseWithdrawLogs(result);
+          await wonderbetBankroll.parseWithdrawLogs(result);
         }
       });
     }
@@ -230,12 +230,12 @@ const EOSBetBankroll = {
       // only withdraw some tokens
       var withdrawAmt = $('#withdraw-amt').val();
 
-      EOSBetBankroll.bankrollInstance.cashoutEOSBetStakeTokens(web3.toWei(withdrawAmt, 'ether'), {from: web3.eth.accounts[0]}, async function(error, result){
+      wonderbetBankroll.bankrollInstance.cashoutwonderbetStakeTokens(web3.toWei(withdrawAmt, 'ether'), {from: web3.eth.accounts[0]}, async function(error, result){
         if (error){
-          console.log('error while withdrawing EOSBET Stake tokens', error);
+          console.log('error while withdrawing wonderbet Stake tokens', error);
         }
         else {
-          await EOSBetBankroll.parseWithdrawLogs(result);
+          await wonderbetBankroll.parseWithdrawLogs(result);
         }
       });
     }
@@ -257,13 +257,13 @@ const EOSBetBankroll = {
       var amountEther = parseInt(data.slice(66, 130), 16).toString();
       var amountTokens = parseInt(data.slice(130, 194), 16).toString();
 
-      $('#withdraw-info').html('You successfully cashed in ' + web3.fromWei(amountTokens, 'ether') + ' EOSBet Stake tokens and have been sent ' + web3.fromWei(amountEther, 'ether') + ' ether. Thank you for contributing to our bankroll!');
+      $('#withdraw-info').html('You successfully cashed in ' + web3.fromWei(amountTokens, 'ether') + ' wonderbet Stake tokens and have been sent ' + web3.fromWei(amountEther, 'ether') + ' ether. Thank you for contributing to our bankroll!');
     }
   },
 
 };
 
 $(document).ready(function(){
-  EOSBetBankroll.init();
+  wonderbetBankroll.init();
 });
 

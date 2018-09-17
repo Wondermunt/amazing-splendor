@@ -11,7 +11,7 @@ function launchNoLoginModal(title){
   html += 				'</div>';
   html += 				'<div class="modal-body">';
   var catchLine;
-  title === 'EOSBet Proof-of-Concept Dice' ? catchLine = 'rolling!' : title === 'EOSBet Proof-of-Concept Slots' ? catchLine = 'spinning!' : catchLine = 'collecting some dividends!';
+  title === 'wonderbet Proof-of-Concept Dice' ? catchLine = 'rolling!' : title === 'wonderbet Proof-of-Concept Slots' ? catchLine = 'spinning!' : catchLine = 'collecting some dividends!';
   html += 					'<text>Hello and welcome to ' + title.toString() + "! It seems you haven't logged in to MetaMask. Please log in to MetaMask, refresh the page, and then start " + catchLine + '</text>';
   html += 					'<br />';
   html += 				'</div>';
@@ -68,7 +68,7 @@ function launchWrongNetworkModal(title){
   html += '</div>';
   html += '<div class="modal-body">';
   var catchLine;
-  title === 'EOSBet Proof-of-Concept Dice' ? catchLine = 'rolling!' : title === 'EOSBet Proof-of-Concept Slots' ? catchLine = 'spinning!' : catchLine = 'collecting some dividends!';
+  title === 'wonderbet Proof-of-Concept Dice' ? catchLine = 'rolling!' : title === 'wonderbet Proof-of-Concept Slots' ? catchLine = 'spinning!' : catchLine = 'collecting some dividends!';
   html += '<text>Hello and welcome to ' + title.toString() + '! It seems you are on the wrong Ethereum network! Please change the network to the Mainnet, refresh the page, and then start ' + catchLine + '</text>';
   html += '<br />';
   html += '</div>';

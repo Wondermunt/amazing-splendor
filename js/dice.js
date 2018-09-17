@@ -33,7 +33,7 @@ function hexToBinary(hexString){
   return binaryString;
 }
 
-const EOSBetDice = {
+const wonderbetDice = {
   // START CONTRACT DATA
   maxRolls: 1024, // this is hard coded into the contract.
   maxWinPerSpin: null,
@@ -57,27 +57,27 @@ const EOSBetDice = {
   diceInstance: null,
 
   init: function() {
-    EOSBetDice.initWeb3();
-    EOSBetDice.bindInitialEvents();
+    wonderbetDice.initWeb3();
+    wonderbetDice.bindInitialEvents();
   },
 
   initWeb3: function() {
     setTimeout(function(){
       if (typeof web3 !== 'undefined'){
         console.log('getting web3');
-        EOSBetDice.web3Provider = web3.currentProvider;
+        wonderbetDice.web3Provider = web3.currentProvider;
 
         web3.version.getNetwork((error, result) => {
           if (error || result !== '1'){
-            launchWrongNetworkModal('EOSBet Proof-of-Concept Dice');
+            launchWrongNetworkModal('wonderbet Proof-of-Concept Dice');
           }
-          return EOSBetDice.initContract(web3);
+          return wonderbetDice.initContract(web3);
         });
 
 
       }
       else {
-        launchNoMetaMaskModal('EOSBet Proof-of-Concept Dice');
+        launchNoMetaMaskModal('wonderbet Proof-of-Concept Dice');
         return;
       }
     }, 500);
@@ -88,19 +88,19 @@ const EOSBetDice = {
       // get contract ABI and init
       var diceAbi = data;
 
-      EOSBetDice.Dice = web3.eth.contract(diceAbi);
+      wonderbetDice.Dice = web3.eth.contract(diceAbi);
       // rinkeby address: 0x5284E4F0CD82276B95fE7902923D24cec57CC51c
       // mainnet address: 0xB533Ff572f5E33d04d02B149E7dCFe980E424c63
-      EOSBetDice.diceInstance = EOSBetDice.Dice.at('0xB533Ff572f5E33d04d02B149E7dCFe980E424c63');
+      wonderbetDice.diceInstance = wonderbetDice.Dice.at('0xB533Ff572f5E33d04d02B149E7dCFe980E424c63');
 
-      return EOSBetDice.getContractDetails(web3);
+      return wonderbetDice.getContractDetails(web3);
 
     });
   },
 
   getContractDetails: function(web3){
     // get amount wagered
-    EOSBetDice.diceInstance.AMOUNTWAGERED.call(function(error, result){
+    wonderbetDice.diceInstance.AMOUNTWAGERED.call(function(error, result){
       if (error){
         console.log('could not retreive balance!');
       }
@@ -110,7 +110,7 @@ const EOSBetDice = {
     });
 
     // get games played
-    EOSBetDice.diceInstance.GAMESPLAYED.call(function(error, result){
+    wonderbetDice.diceInstance.GAMESPLAYED.call(function(error, result){
       if (error){
         console.log('could not get games played');
       }
@@ -121,68 +121,68 @@ const EOSBetDice = {
 
     // get max win per spin
 
-    EOSBetDice.diceInstance.getMaxWin(function(error, result){
+    wonderbetDice.diceInstance.getMaxWin(function(error, result){
       if (error){
         console.log('could not get bankroll!');
       }
       else {
         $('#max-win').html(web3.fromWei(result, 'ether').toString().slice(0, 7));
-        EOSBetDice.maxWinPerSpin = result;
+        wonderbetDice.maxWinPerSpin = result;
       }
     });
 
     // get min bet per spin
-    EOSBetDice.diceInstance.MINBET_perROLL.call(function(error, result){
+    wonderbetDice.diceInstance.MINBET_perROLL.call(function(error, result){
       if (error){
         console.log('could not get min bet per roll');
       }
       else {
-        EOSBetDice.minBetPerRoll = result;
+        wonderbetDice.minBetPerRoll = result;
         $('#min-bet-per-roll').text(web3.fromWei(result, 'ether').toString().slice(0, 7));
       }
     });
 
     // get min bet per spin
-    EOSBetDice.diceInstance.MINBET_perTX.call(function(error, result){
+    wonderbetDice.diceInstance.MINBET_perTX.call(function(error, result){
       if (error){
         console.log('could not get min bet per tx');
       }
       else {
-        EOSBetDice.minBetPerTx = result;
+        wonderbetDice.minBetPerTx = result;
         $('#min-bet-per-tx').text(web3.fromWei(result, 'ether').toString().slice(0, 7));
         $('#min-bet-per-tx-2').text(web3.fromWei(result, 'ether').toString().slice(0, 7));
       }
     });    
 
     // get house edge
-    EOSBetDice.diceInstance.HOUSEEDGE_inTHOUSANDTHPERCENTS.call(function(error, result){
+    wonderbetDice.diceInstance.HOUSEEDGE_inTHOUSANDTHPERCENTS.call(function(error, result){
       if (error){
         console.log('could not get game paused');
       }
       else {
-        EOSBetDice.houseEdge = new BigNumber(result.dividedBy(10));
+        wonderbetDice.houseEdge = new BigNumber(result.dividedBy(10));
       }
     });
 
     // get if game is paused and launch modal
-    EOSBetDice.diceInstance.GAMEPAUSED.call(function(error, result){
+    wonderbetDice.diceInstance.GAMEPAUSED.call(function(error, result){
       if (error){
         console.log('could not get game paused');
       }
       else {
         if (result === true){
-          launchGamePausedModal('EOSBet Proof-of-Concept Dice');
+          launchGamePausedModal('wonderbet Proof-of-Concept Dice');
         }
       }
     });
 
-    return EOSBetDice.getPlayerDetails(web3);
+    return wonderbetDice.getPlayerDetails(web3);
   },
 
   getPlayerDetails: function(web3){
     var accounts = web3.eth.accounts;
     if (accounts.length === 0){
-      launchNoLoginModal('EOSBet Proof-of-Concept Dice');
+      launchNoLoginModal('wonderbet Proof-of-Concept Dice');
     }
     else {
       var playersAccount = accounts[0];
@@ -195,36 +195,36 @@ const EOSBetDice = {
         }
         else {
           $('#your-balance').text(web3.fromWei(result, 'ether').toString());
-          EOSBetDice.playerBalance = result;
+          wonderbetDice.playerBalance = result;
         }
       });
-      EOSBetDice.player = playersAccount;
+      wonderbetDice.player = playersAccount;
     }
   },
 
   bindInitialEvents: function() {
     $('#buy-rolls').click(function() {
-      EOSBetDice.buyRolls();
+      wonderbetDice.buyRolls();
     });
     $('#roll-dice').click(function() {
-      EOSBetDice.rollDice();
+      wonderbetDice.rollDice();
     });
   },
 
   buyRolls: function(){
     // from sliders
-    EOSBetDice.rollUnder = rollUnderValue();
-    EOSBetDice.totalRolls = numberRollsValue();
+    wonderbetDice.rollUnder = rollUnderValue();
+    wonderbetDice.totalRolls = numberRollsValue();
     // amount bet
-    EOSBetDice.betPerRoll = new BigNumber(web3.toWei($('#bet-per-roll').val(), 'ether'));
+    wonderbetDice.betPerRoll = new BigNumber(web3.toWei($('#bet-per-roll').val(), 'ether'));
     // total amt to send
-    EOSBetDice.totalBet = new BigNumber(EOSBetDice.betPerRoll.times(guaranteedRollsValue()).toFixed(0));
+    wonderbetDice.totalBet = new BigNumber(wonderbetDice.betPerRoll.times(guaranteedRollsValue()).toFixed(0));
 
-    EOSBetDice.onRoll = 0;
+    wonderbetDice.onRoll = 0;
 
-    var player = EOSBetDice.getPlayerDetails(web3);
+    var player = wonderbetDice.getPlayerDetails(web3);
 
-    EOSBetDice.diceInstance.play(EOSBetDice.betPerRoll.toString(), EOSBetDice.totalRolls.toString(), EOSBetDice.rollUnder.toString(), {value: EOSBetDice.totalBet.toString(), from: player, gasPrice: 10000000000}, async function(error, result){
+    wonderbetDice.diceInstance.play(wonderbetDice.betPerRoll.toString(), wonderbetDice.totalRolls.toString(), wonderbetDice.rollUnder.toString(), {value: wonderbetDice.totalBet.toString(), from: player, gasPrice: 10000000000}, async function(error, result){
       if (error){
         console.log('error while purchasing rolls ---', error);
       }
@@ -244,8 +244,8 @@ const EOSBetDice = {
           var ledgerProofFailTopic = '0x2576aa524eff2f518901d6458ad267a59debacb7bf8700998dba20313f17dce6';
           var oraclizeQueryId = txReceipt.logs[1]['topics'][1];
 
-          var watchForResult = web3.eth.filter({topics: [resultTopic, oraclizeQueryId], fromBlock: 'pending', to: EOSBetDice.diceInstance.address});
-          var watchForFail = web3.eth.filter({topics: [ledgerProofFailTopic, oraclizeQueryId], fromBlock: 'pending', to: EOSBetDice.diceInstance.address});
+          var watchForResult = web3.eth.filter({topics: [resultTopic, oraclizeQueryId], fromBlock: 'pending', to: wonderbetDice.diceInstance.address});
+          var watchForFail = web3.eth.filter({topics: [ledgerProofFailTopic, oraclizeQueryId], fromBlock: 'pending', to: wonderbetDice.diceInstance.address});
 
           watchForResult.watch(function(error, result){
             if (error){
@@ -258,7 +258,7 @@ const EOSBetDice = {
 
               var data = result.data;
 
-              EOSBetDice.parseRolls(data);
+              wonderbetDice.parseRolls(data);
             }
           });
 
@@ -269,7 +269,7 @@ const EOSBetDice = {
             else {
               watchForResult.stopWatching();
               watchForFail.stopWatching();
-              $('#game-info').html('<br /><div class="alert alert-danger">We apologize, but the random number has not passed our test of provable randomness, so all your ether has been refunded. Please feel free to play again, or read more about our instantly provable randomness generation <a href="/support.html">here</a>. We strive to bring the best online gambling experience at EOSBet.IO, and occasionally the random numbers generated do not pass our stringent testing.</div>');
+              $('#game-info').html('<br /><div class="alert alert-danger">We apologize, but the random number has not passed our test of provable randomness, so all your ether has been refunded. Please feel free to play again, or read more about our instantly provable randomness generation <a href="/support.html">here</a>. We strive to bring the best online gambling experience at wonderbet.IO, and occasionally the random numbers generated do not pass our stringent testing.</div>');
             }
           });
         }
@@ -287,55 +287,55 @@ const EOSBetDice = {
     $('#address-balance-stats').hide();
 
     // set values initially...
-    $('#bet-size').text(web3.fromWei(EOSBetDice.betPerRoll, 'ether').slice(0, 8));
-    $('#current-profit').text(web3.fromWei(EOSBetDice.totalBet, 'ether').slice(0, 8));
-    $('#max-rolls').text('0' + '/' + EOSBetDice.totalRolls.toString());
-    $('#lucky-number').html(EOSBetDice.rollUnder.toString());
+    $('#bet-size').text(web3.fromWei(wonderbetDice.betPerRoll, 'ether').slice(0, 8));
+    $('#current-profit').text(web3.fromWei(wonderbetDice.totalBet, 'ether').slice(0, 8));
+    $('#max-rolls').text('0' + '/' + wonderbetDice.totalRolls.toString());
+    $('#lucky-number').html(wonderbetDice.rollUnder.toString());
 
-    EOSBetDice.currentProfit = EOSBetDice.totalBet;
+    wonderbetDice.currentProfit = wonderbetDice.totalBet;
 
     // get the amount of rolls that actually happened from the logs
     var rolls = parseInt(data.slice(2, 66), 16);
 
     // get the roll data (in a hex string, convert to binary)..
     // then we need to slice this string again, because after the rolls are done, it will all be 00000000
-    EOSBetDice.rollData = hexToBinary(data.slice(66, 322)).slice(0, rolls);
+    wonderbetDice.rollData = hexToBinary(data.slice(66, 322)).slice(0, rolls);
   },
 
   rollDice: function(){
-    var win = EOSBetDice.rollData.charAt(EOSBetDice.onRoll) === '1';
+    var win = wonderbetDice.rollData.charAt(wonderbetDice.onRoll) === '1';
 
-    var houseEdgeMult = ((100 - EOSBetDice.houseEdge) / 100).toString();
-    var profitMult = (100 / (EOSBetDice.rollUnder - 1)).toString();
+    var houseEdgeMult = ((100 - wonderbetDice.houseEdge) / 100).toString();
+    var profitMult = (100 / (wonderbetDice.rollUnder - 1)).toString();
 
-    var winSize = EOSBetDice.betPerRoll.times(profitMult).times(houseEdgeMult).minus(EOSBetDice.betPerRoll);
+    var winSize = wonderbetDice.betPerRoll.times(profitMult).times(houseEdgeMult).minus(wonderbetDice.betPerRoll);
 
     // increment or decrement current profit based on win or not
-    win ? EOSBetDice.currentProfit = EOSBetDice.currentProfit.add(winSize) : EOSBetDice.currentProfit = EOSBetDice.currentProfit.minus(EOSBetDice.betPerRoll);
+    win ? wonderbetDice.currentProfit = wonderbetDice.currentProfit.add(winSize) : wonderbetDice.currentProfit = wonderbetDice.currentProfit.minus(wonderbetDice.betPerRoll);
 
-    EOSBetDice.onRoll += 1;
+    wonderbetDice.onRoll += 1;
 
-    rollingDice(win, EOSBetDice.rollUnder, winSize, EOSBetDice.onRoll, EOSBetDice.totalRolls, EOSBetDice.betPerRoll, EOSBetDice.currentProfit);
+    rollingDice(win, wonderbetDice.rollUnder, winSize, wonderbetDice.onRoll, wonderbetDice.totalRolls, wonderbetDice.betPerRoll, wonderbetDice.currentProfit);
   },
 
   calculateMaxBet: function(rollUnder){
     // stay on the safe side so rolls don't fail...
     var profitMult = (100 / (rollUnderValue() - 1)).toString();
-    var maxBet = EOSBetDice.maxWinPerSpin.dividedBy(profitMult).times(0.98);
+    var maxBet = wonderbetDice.maxWinPerSpin.dividedBy(profitMult).times(0.98);
 
     return web3.fromWei(maxBet, 'ether');
   },
 
   calculateMinBetPerRoll: function(){
-    return web3.fromWei(EOSBetDice.minBetPerRoll, 'ether');
+    return web3.fromWei(wonderbetDice.minBetPerRoll, 'ether');
   },
 
   calculateMinBetPerTx: function(){
-    return web3.fromWei(EOSBetDice.minBetPerTx, 'ether');
+    return web3.fromWei(wonderbetDice.minBetPerTx, 'ether');
   },
 
   calculateProfit: function(betPerRoll, rollUnder){
-    var profit = (100 / (rollUnder - 1) * ((100 - EOSBetDice.houseEdge) / 100));
+    var profit = (100 / (rollUnder - 1) * ((100 - wonderbetDice.houseEdge) / 100));
     console.log('profit', profit);
     return profit;
   },
@@ -343,7 +343,7 @@ const EOSBetDice = {
 
 $(document).ready(function(){
   initUI();
-  EOSBetDice.init();
+  wonderbetDice.init();
 
 });
 
@@ -372,7 +372,7 @@ function initUI(){
 
   // max and min buttons, double/half buttons
   $('#max-bet-per-roll-btn').click(function(){
-    var maxBet = EOSBetDice.calculateMaxBet(parseFloat(rollUnderValue()));
+    var maxBet = wonderbetDice.calculateMaxBet(parseFloat(rollUnderValue()));
     $('#bet-per-roll').val(maxBet.toString());
 
     updateGuaranteedRollsSlider_withFixedRolls();
@@ -381,7 +381,7 @@ function initUI(){
   });
 
   $('#double-bet-per-roll-btn').click(function(){
-    var maxBet = EOSBetDice.calculateMaxBet(parseFloat(rollUnderValue()));
+    var maxBet = wonderbetDice.calculateMaxBet(parseFloat(rollUnderValue()));
     var doubleBet = parseFloat($('#bet-per-roll').val()) * 2;
 
     if (maxBet < doubleBet){
@@ -397,7 +397,7 @@ function initUI(){
   });
 
   $('#half-bet-per-roll-btn').click(function(){
-    var minBet = EOSBetDice.calculateMinBetPerRoll();
+    var minBet = wonderbetDice.calculateMinBetPerRoll();
     var halfBet = parseFloat($('#bet-per-roll').val()) / 2;
 
     if (minBet > halfBet){
@@ -413,7 +413,7 @@ function initUI(){
   });
 
   $('#min-bet-per-roll-btn').click(function(){
-    $('#bet-per-roll').val(EOSBetDice.calculateMinBetPerRoll());
+    $('#bet-per-roll').val(wonderbetDice.calculateMinBetPerRoll());
 
     updateGuaranteedRollsSlider_withFixedRolls();
 
@@ -442,7 +442,7 @@ function initUI(){
       if (typeof web3 === 'undefined') return;
       // if the roll under gets so low, that the player would win a large amount, scale this down
       else {
-        var maxBet = EOSBetDice.calculateMaxBet(parseFloat(ui.value));
+        var maxBet = wonderbetDice.calculateMaxBet(parseFloat(ui.value));
 
         if ($('#bet-per-roll').val() > maxBet){
           $('#bet-per-roll').val(maxBet);
@@ -492,7 +492,7 @@ function insertProfitPerRoll(rollUnderValue){
   // skip if no web3
   if (typeof web3 === 'undefined') return;
 
-  var profit = EOSBetDice.calculateProfit(parseFloat($('#bet-per-roll').val()), rollUnderValue);
+  var profit = wonderbetDice.calculateProfit(parseFloat($('#bet-per-roll').val()), rollUnderValue);
   $('#current-profit-per-roll').html(profit.toString().slice(0, 4) + 'x');
 }
 
@@ -515,7 +515,7 @@ function updateGuaranteedRollsSlider(numberRolls){
   var betPerRoll = parseFloat($('#bet-per-roll').val());
 
   if (!isNaN(betPerRoll) && betPerRoll !== 0){
-    var maxPossibleRolls = Math.floor(web3.fromWei(EOSBetDice.playerBalance, 'ether') / betPerRoll);
+    var maxPossibleRolls = Math.floor(web3.fromWei(wonderbetDice.playerBalance, 'ether') / betPerRoll);
 
     if (maxPossibleRolls < numberRolls){
       // change the max value to the max rolls possible
@@ -550,7 +550,7 @@ function updateTotalBet(guarRollsValue){
 
 //   var totalBet = betPerRoll * guarRollsValue;
 
-//   if (totalBet < parseFloat(EOSBetDice.calculateMinBetPerTx())){
+//   if (totalBet < parseFloat(wonderbetDice.calculateMinBetPerTx())){
 //     $('#total-bet').html('<text style="color:red !important;">' + totalBet.toString().slice(0, 7) +'</text>');
 //   }
 //   else {
@@ -577,7 +577,7 @@ function rollingDice(win, rollUnder, winSize, onRoll, totalRolls, betPerRoll, cu
     
     $('#roll-dice').removeClass('disabled');
     $('#roll-dice').click(() => {
-      EOSBetDice.rollDice();
+      wonderbetDice.rollDice();
     });
 
     return;
@@ -622,7 +622,7 @@ function rollingDice(win, rollUnder, winSize, onRoll, totalRolls, betPerRoll, cu
         if (onRoll < totalRolls) $('#roll-dice').removeClass('disabled');
 
         $('#roll-dice').click(() => {
-          EOSBetDice.rollDice();
+          wonderbetDice.rollDice();
         });
 
       }, 500);
@@ -658,7 +658,7 @@ function checkGameStatus(onRoll, totalRolls, currentProfit, betPerRoll){
       $('#roll-bets').hide();
 
       // bring back the stats and the buy box
-      EOSBetDice.getPlayerDetails(web3);
+      wonderbetDice.getPlayerDetails(web3);
       $('#place-bets').show();
       $('#address-balance-stats').show();
 

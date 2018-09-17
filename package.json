@@ -1,5 +1,5 @@
 {
-  "name": "eosbet.io",
+  "name": "wonderbet.io",
   "version": "1.0.0",
   "description": "Website for beta games on ethereum main-net and crowdsale",
   "main": "index.html",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://eosbet-io@github.com/EOSBetIO/EOSBet.IO.git"
+    "url": "git+https://wonderbet-io@github.com/wonderbetIO/wonderbet.IO.git"
   },
   "keywords": [
     "eos",
@@ -23,12 +23,12 @@
     "wasm",
     "smart-business"
   ],
-  "author": "EOSBetIO",
+  "author": "wonderbetIO",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/EOSBetIO/EOSBet.IO/issues"
+    "url": "https://github.com/wonderbetIO/wonderbet.IO/issues"
   },
-  "homepage": "https://github.com/EOSBetIO/EOSBet.IO#readme",
+  "homepage": "https://github.com/wonderbetIO/wonderbet.IO#readme",
   "devDependencies": {
     "cssnano": "^3.10.0",
     "eslint": "^4.19.1",

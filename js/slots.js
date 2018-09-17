@@ -49,7 +49,7 @@ function hexToOctal(hexString){
   return octalString;
 }
 
-const EOSBetSlots = {
+const wonderbetSlots = {
   // contract data
   dial1Layout: [[15], [30, 35, 41, 43, 45, 49, 54], [51], [9, 21, 22, 27, 37], [1, 6, 26, 28, 40, 52, 56, 59, 60], [3, 25, 32, 34, 38, 42, 57, 61, 62], [2, 4, 5, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 23, 24, 29, 31, 33, 36, 39, 44, 46, 47, 48, 50, 53, 55, 58, 63, 64]],
   dial2Layout: [[14, 15, 16], [5], [34, 42, 44, 46, 57, 58, 61], [7, 8, 22, 23, 36, 37, 56], [1, 27, 28, 52, 59, 64], [25, 31, 32, 38, 41, 47, 53, 54], [2, 3, 4, 6, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 24, 26, 29, 30, 33, 35, 39, 40, 43, 45, 48, 49, 50, 51, 55, 60, 62, 63]],
@@ -76,25 +76,25 @@ const EOSBetSlots = {
   slotsInstance: null,
 
   init: function() {
-    EOSBetSlots.initWeb3();
-    EOSBetSlots.bindInitialEvents();
+    wonderbetSlots.initWeb3();
+    wonderbetSlots.bindInitialEvents();
   },
 
   initWeb3: function(){
     setTimeout(function(){
       if (typeof web3 !== 'undefined'){
         console.log('getting web3');
-        EOSBetSlots.web3Provider = web3.currentProvider;
+        wonderbetSlots.web3Provider = web3.currentProvider;
 
         web3.version.getNetwork((error, result) => {
           if (error || result !== '1'){
-            launchWrongNetworkModal('EOSBet Proof-of-Concept Slots');
+            launchWrongNetworkModal('wonderbet Proof-of-Concept Slots');
           }
-          return EOSBetSlots.initContract(web3);
+          return wonderbetSlots.initContract(web3);
         });
       }
       else {
-        launchNoMetaMaskModal('EOSBet Proof-of-Concept Slots');
+        launchNoMetaMaskModal('wonderbet Proof-of-Concept Slots');
         return;
       }
     }, 500);
@@ -105,19 +105,19 @@ const EOSBetSlots = {
       // get contract ABI and init
       var slotsAbi = data;
 
-      EOSBetSlots.Slots = web3.eth.contract(slotsAbi);
+      wonderbetSlots.Slots = web3.eth.contract(slotsAbi);
       // rinkeby address: 0x271Dcb02Ae2B3B51D7FEc8c12EF2959B3f13357A
       // mainnet address: 0x4A3e0c60f7Fa67E8B65C401ddbBF7C17Fea5fe40
-      EOSBetSlots.slotsInstance = EOSBetSlots.Slots.at('0x4A3e0c60f7Fa67E8B65C401ddbBF7C17Fea5fe40');
+      wonderbetSlots.slotsInstance = wonderbetSlots.Slots.at('0x4A3e0c60f7Fa67E8B65C401ddbBF7C17Fea5fe40');
 
-      return EOSBetSlots.getContractDetails(web3);
+      return wonderbetSlots.getContractDetails(web3);
 
     });
   },
 
   getContractDetails: function(web3){
     // get amount wagered
-    EOSBetSlots.slotsInstance.AMOUNTWAGERED.call(function(error, result){
+    wonderbetSlots.slotsInstance.AMOUNTWAGERED.call(function(error, result){
       if (error){
         console.log('could not retreive balance!');
       }
@@ -127,7 +127,7 @@ const EOSBetSlots = {
     });
 
     // get games played
-    EOSBetSlots.slotsInstance.DIALSSPUN.call(function(error, result){
+    wonderbetSlots.slotsInstance.DIALSSPUN.call(function(error, result){
       if (error){
         console.log('could not get dials spun');
       }
@@ -138,59 +138,59 @@ const EOSBetSlots = {
     });
 
     // get min bet per spin
-    EOSBetSlots.slotsInstance.MINBET_perSPIN.call(function(error, result){
+    wonderbetSlots.slotsInstance.MINBET_perSPIN.call(function(error, result){
       if (error){
         console.log('could not get min bet/roll');
       }
       else {
         $('#min-bet-per-spin').html(web3.fromWei(result, 'ether').toString().slice(0, 7));
-        EOSBetSlots.minBetPerSpin = result;
+        wonderbetSlots.minBetPerSpin = result;
       }
     });
 
     // get min bet per transaction
-    EOSBetSlots.slotsInstance.MINBET_perTX.call(function(error, result){
+    wonderbetSlots.slotsInstance.MINBET_perTX.call(function(error, result){
       if (error){
         console.log('could not get min bet/tx');
       }
       else {
         $('#min-bet-per-tx').html(web3.fromWei(result, 'ether').toString().slice(0, 7));
         $('#min-bet-per-tx-2').html(web3.fromWei(result, 'ether').toString().slice(0, 7));
-        EOSBetSlots.minBetPerTx = result;
+        wonderbetSlots.minBetPerTx = result;
       }
     });
 
     // get maximum bet
-    EOSBetSlots.slotsInstance.getMaxWin(function(error, result){
+    wonderbetSlots.slotsInstance.getMaxWin(function(error, result){
       if (error){
         console.log('could not get bet limit');
       }
       else {
         var max = result.dividedBy(5000).toFixed(0);
         $('#max-bet').html(web3.fromWei(max, 'ether').toString().slice(0, 7));
-        EOSBetSlots.maxBet = new BigNumber(max);
+        wonderbetSlots.maxBet = new BigNumber(max);
       }
     });
 
     // get if the game is paused and launch modal
-    EOSBetSlots.slotsInstance.GAMEPAUSED.call(function(error, result){
+    wonderbetSlots.slotsInstance.GAMEPAUSED.call(function(error, result){
       if (error){
         console.log('could not get game paused');
       }
       else {
         if (result === true){
-          launchGamePausedModal('EOSBet Proof-of-Concept Slots');
+          launchGamePausedModal('wonderbet Proof-of-Concept Slots');
         }
       }
     });
 
-    return EOSBetSlots.getPlayerDetails(web3);
+    return wonderbetSlots.getPlayerDetails(web3);
   },
 
   getPlayerDetails: function(web3){
     var accounts = web3.eth.accounts;
     if (accounts.length === 0){
-      launchNoLoginModal('EOSBet Proof-of-Concept Slots');
+      launchNoLoginModal('wonderbet Proof-of-Concept Slots');
     }
     else {
       var playersAccount = accounts[0];
@@ -203,20 +203,20 @@ const EOSBetSlots = {
         }
         else {
           $('#your-balance').html(web3.fromWei(result, 'ether').toString());
-          EOSBetSlots.playerBalance = result;
+          wonderbetSlots.playerBalance = result;
         }
       });
-      EOSBetSlots.player = playersAccount;
+      wonderbetSlots.player = playersAccount;
       return playersAccount;
     }
   },
 
   bindInitialEvents: function() {
     $('#buy-credits').click(function(){
-      EOSBetSlots.buyCredits();
+      wonderbetSlots.buyCredits();
     });
     $('#spin-wheel').click(function(){
-      EOSBetSlots.spinWheel();
+      wonderbetSlots.spinWheel();
     });
   },
 
@@ -224,16 +224,16 @@ const EOSBetSlots = {
     var credits = numberSpinsValue();
     var betPerCredit = $('#bet-per-spin').val();
 
-    EOSBetSlots.credits = parseInt(credits, 10);
-    EOSBetSlots.betPerCredit = new BigNumber(betPerCredit);
-    EOSBetSlots.onCredit = 1;
-    EOSBetSlots.totalProfit = new BigNumber(0);
+    wonderbetSlots.credits = parseInt(credits, 10);
+    wonderbetSlots.betPerCredit = new BigNumber(betPerCredit);
+    wonderbetSlots.onCredit = 1;
+    wonderbetSlots.totalProfit = new BigNumber(0);
 
-    var totalBet = EOSBetSlots.betPerCredit.times(credits);
+    var totalBet = wonderbetSlots.betPerCredit.times(credits);
 
-    var player = EOSBetSlots.getPlayerDetails(web3);
+    var player = wonderbetSlots.getPlayerDetails(web3);
 
-    EOSBetSlots.slotsInstance.play(credits, {value: web3.toWei(totalBet, 'ether'), from: player, gasPrice: 10000000000}, async function(error, result){
+    wonderbetSlots.slotsInstance.play(credits, {value: web3.toWei(totalBet, 'ether'), from: player, gasPrice: 10000000000}, async function(error, result){
       if (error) {
         console.log('error while purchasing credits ---', error);
       }
@@ -254,8 +254,8 @@ const EOSBetSlots = {
           // get oraclize query id from the logs...
           var oraclizeQueryId = txReceipt.logs[1]['topics'][1];
           // now watch for the oraclize callback with this queryId
-          var watchForResult = web3.eth.filter({topics: [resultTopic, oraclizeQueryId], fromBlock: 'pending', to: EOSBetSlots.slotsInstance.address});
-          var watchForFail = web3.eth.filter({topics: [failTopic, oraclizeQueryId], fromBlock: 'pending', to: EOSBetSlots.slotsInstance.address});
+          var watchForResult = web3.eth.filter({topics: [resultTopic, oraclizeQueryId], fromBlock: 'pending', to: wonderbetSlots.slotsInstance.address});
+          var watchForFail = web3.eth.filter({topics: [failTopic, oraclizeQueryId], fromBlock: 'pending', to: wonderbetSlots.slotsInstance.address});
 
           watchForResult.watch(function(error, result){
             if (error) {
@@ -267,7 +267,7 @@ const EOSBetSlots = {
 
               var data = result.data;
 
-              EOSBetSlots.parseData(data);
+              wonderbetSlots.parseData(data);
             }
           });
 
@@ -279,7 +279,7 @@ const EOSBetSlots = {
               watchForResult.stopWatching();
               watchForFail.stopWatching();
 
-              $('#game-info').html('<div class="alert alert-danger">We apologize, but the random number has not passed our test of provable randomness, so all your ether has been refunded. Please feel free to play again, or read more about our instantly provable randomness generation <a href="/support.html">here</a>. We strive to bring the best online gambling experience at EOSBet.IO, and occasionally the random numbers generated do not pass our stringent testing.</div>');
+              $('#game-info').html('<div class="alert alert-danger">We apologize, but the random number has not passed our test of provable randomness, so all your ether has been refunded. Please feel free to play again, or read more about our instantly provable randomness generation <a href="/support.html">here</a>. We strive to bring the best online gambling experience at wonderbet.IO, and occasionally the random numbers generated do not pass our stringent testing.</div>');
             }
           });
         }
@@ -289,15 +289,15 @@ const EOSBetSlots = {
 
   calculateMaxBet: function(){
     // reduce the maxBet somewhat, so we don't get accidental reverts
-    return new BigNumber(EOSBetSlots.maxBet.times(0.98).toFixed(0));
+    return new BigNumber(wonderbetSlots.maxBet.times(0.98).toFixed(0));
   },
 
   calculateMinBetPerSpin: function(){
-    return EOSBetSlots.minBetPerSpin;
+    return wonderbetSlots.minBetPerSpin;
   },
 
   calculateMinBetPerTx: function(){
-    return EOSBetSlots.minBetPerTx;
+    return wonderbetSlots.minBetPerTx;
   },
 
   parseData: function(data){
@@ -309,9 +309,9 @@ const EOSBetSlots = {
     // now convert parsedData to octal, each dial is represented in octal notation.
     var parsedData_octal = hexToOctal(parsedData);
 
-    EOSBetSlots.spinData = parsedData_octal;
+    wonderbetSlots.spinData = parsedData_octal;
 
-    $('#spins-remaining').text(EOSBetSlots.credits);
+    $('#spins-remaining').text(wonderbetSlots.credits);
     $('#total-profit').text('0');
 
     $('#game-info').html('');
@@ -327,20 +327,20 @@ const EOSBetSlots = {
     $('#spin-wheel').addClass('disabled');
     $('#spin-wheel').off('click');
 
-    EOSBetSlots.dial1Type = parseInt(EOSBetSlots.spinData[0], 10);
-    EOSBetSlots.dial2Type = parseInt(EOSBetSlots.spinData[1], 10);
-    EOSBetSlots.dial3Type = parseInt(EOSBetSlots.spinData[2], 10);
+    wonderbetSlots.dial1Type = parseInt(wonderbetSlots.spinData[0], 10);
+    wonderbetSlots.dial2Type = parseInt(wonderbetSlots.spinData[1], 10);
+    wonderbetSlots.dial3Type = parseInt(wonderbetSlots.spinData[2], 10);
 
-    EOSBetSlots.spinData = EOSBetSlots.spinData.slice(3);
+    wonderbetSlots.spinData = wonderbetSlots.spinData.slice(3);
 
-    var dial1Location = String(EOSBetSlots.dial1Layout[EOSBetSlots.dial1Type][Math.floor(Math.random() * EOSBetSlots.dial1Layout[EOSBetSlots.dial1Type].length)]);
-    var dial2Location = String(EOSBetSlots.dial2Layout[EOSBetSlots.dial2Type][Math.floor(Math.random() * EOSBetSlots.dial2Layout[EOSBetSlots.dial2Type].length)]);
-    var dial3Location = String(EOSBetSlots.dial3Layout[EOSBetSlots.dial3Type][Math.floor(Math.random() * EOSBetSlots.dial3Layout[EOSBetSlots.dial3Type].length)]);
+    var dial1Location = String(wonderbetSlots.dial1Layout[wonderbetSlots.dial1Type][Math.floor(Math.random() * wonderbetSlots.dial1Layout[wonderbetSlots.dial1Type].length)]);
+    var dial2Location = String(wonderbetSlots.dial2Layout[wonderbetSlots.dial2Type][Math.floor(Math.random() * wonderbetSlots.dial2Layout[wonderbetSlots.dial2Type].length)]);
+    var dial3Location = String(wonderbetSlots.dial3Layout[wonderbetSlots.dial3Type][Math.floor(Math.random() * wonderbetSlots.dial3Layout[wonderbetSlots.dial3Type].length)]);
 
     // spin through all combinations, and then blindly search for the previously determined dial position
-    EOSBetSlots.animateWheel('#dial-1', 0, dial1Location, false);
-    EOSBetSlots.animateWheel('#dial-2', 0, dial2Location, false);
-    EOSBetSlots.animateWheel('#dial-3', 0, dial3Location, false);
+    wonderbetSlots.animateWheel('#dial-1', 0, dial1Location, false);
+    wonderbetSlots.animateWheel('#dial-2', 0, dial2Location, false);
+    wonderbetSlots.animateWheel('#dial-3', 0, dial3Location, false);
   },
 
   animateWheel: function(dialId, numberChanges, dialLocation, searching){
@@ -356,23 +356,23 @@ const EOSBetSlots = {
 
       // start "search"... aka spin 64 more times and slowly come to a stop
       if (!searching && currentLocation === dialLocation){
-        EOSBetSlots.doWheelAnimation(dialId, 1, dialLocation, true);
+        wonderbetSlots.doWheelAnimation(dialId, 1, dialLocation, true);
       }
       // done with search, display a payout if there is one & the third dial is done spinning!
       else if (searching && numberChanges === 64){
         if (dialId === '#dial-3'){
           // if the third dial is done spinning (means they all are done spinning), animate the payment
-          EOSBetSlots.animatePayment();
+          wonderbetSlots.animatePayment();
         }
       }
       // keep going like normal!
       else {
-        EOSBetSlots.doWheelAnimation(dialId, numberChanges + 1, dialLocation, searching);
+        wonderbetSlots.doWheelAnimation(dialId, numberChanges + 1, dialLocation, searching);
       }
     }
     // not searching, just keep spinning fast
     else {
-      EOSBetSlots.doWheelAnimation(dialId, numberChanges + 1, dialLocation, false);
+      wonderbetSlots.doWheelAnimation(dialId, numberChanges + 1, dialLocation, false);
     }
 
   },
@@ -399,66 +399,66 @@ const EOSBetSlots = {
       $(dialId + ' div:first-child').remove();
 
       // Call animate wheel again...
-      EOSBetSlots.animateWheel(dialId, numberChanges, dialLocation, searching);
+      wonderbetSlots.animateWheel(dialId, numberChanges, dialLocation, searching);
     });
   },
 
   animatePayment: function(){
     var winningsMultiple = 0;
 
-    if (EOSBetSlots.dial1Type === 2 && EOSBetSlots.dial2Type === 1 && EOSBetSlots.dial3Type === 0){
+    if (wonderbetSlots.dial1Type === 2 && wonderbetSlots.dial2Type === 1 && wonderbetSlots.dial3Type === 0){
       winningsMultiple = 5000;
     }
-    else if (EOSBetSlots.dial1Type === 0 && EOSBetSlots.dial2Type === 0 && EOSBetSlots.dial3Type === 0){
+    else if (wonderbetSlots.dial1Type === 0 && wonderbetSlots.dial2Type === 0 && wonderbetSlots.dial3Type === 0){
       winningsMultiple = 1777;
     }
-    else if (EOSBetSlots.dial1Type === 1 && EOSBetSlots.dial2Type === 1 && EOSBetSlots.dial3Type === 1){
+    else if (wonderbetSlots.dial1Type === 1 && wonderbetSlots.dial2Type === 1 && wonderbetSlots.dial3Type === 1){
       winningsMultiple = 250;
     }
-    else if (EOSBetSlots.dial1Type === 2 && EOSBetSlots.dial2Type === 2 && EOSBetSlots.dial3Type === 2){
+    else if (wonderbetSlots.dial1Type === 2 && wonderbetSlots.dial2Type === 2 && wonderbetSlots.dial3Type === 2){
       winningsMultiple = 250;
     }
-    else if (EOSBetSlots.dial1Type === 5 && EOSBetSlots.dial1Type === 4 && EOSBetSlots.dial3Type === 3){
+    else if (wonderbetSlots.dial1Type === 5 && wonderbetSlots.dial1Type === 4 && wonderbetSlots.dial3Type === 3){
       winningsMultiple = 90;
     }
-    else if (EOSBetSlots.dial1Type >= 0 && EOSBetSlots.dial1Type <= 2 && EOSBetSlots.dial2Type >= 0 && EOSBetSlots.dial2Type <= 2 && EOSBetSlots.dial3Type >= 0 && EOSBetSlots.dial3Type <= 2){
+    else if (wonderbetSlots.dial1Type >= 0 && wonderbetSlots.dial1Type <= 2 && wonderbetSlots.dial2Type >= 0 && wonderbetSlots.dial2Type <= 2 && wonderbetSlots.dial3Type >= 0 && wonderbetSlots.dial3Type <= 2){
       winningsMultiple = 70;
     }
-    else if (EOSBetSlots.dial1Type === 3 && EOSBetSlots.dial2Type === 3 && EOSBetSlots.dial3Type === 3){
+    else if (wonderbetSlots.dial1Type === 3 && wonderbetSlots.dial2Type === 3 && wonderbetSlots.dial3Type === 3){
       winningsMultiple = 50;
     }
-    else if (EOSBetSlots.dial1Type === 4 && EOSBetSlots.dial2Type === 4 && EOSBetSlots.dial3Type === 4){
+    else if (wonderbetSlots.dial1Type === 4 && wonderbetSlots.dial2Type === 4 && wonderbetSlots.dial3Type === 4){
       winningsMultiple = 25;
     }
-    else if ((EOSBetSlots.dial1Type === 3 && ((EOSBetSlots.dial2Type === 4 && EOSBetSlots.dial3Type === 5) || (EOSBetSlots.dial2Type === 5 && EOSBetSlots.dial3Type === 4)))
-            || (EOSBetSlots.dial1Type === 4 && ((EOSBetSlots.dial2Type === 3 && EOSBetSlots.dial3Type === 5) || (EOSBetSlots.dial2Type === 5 && EOSBetSlots.dial3Type === 3)))
-            || EOSBetSlots.dial1Type === 5 && EOSBetSlots.dial2Type === 3 && EOSBetSlots.dial3Type === 4){
+    else if ((wonderbetSlots.dial1Type === 3 && ((wonderbetSlots.dial2Type === 4 && wonderbetSlots.dial3Type === 5) || (wonderbetSlots.dial2Type === 5 && wonderbetSlots.dial3Type === 4)))
+            || (wonderbetSlots.dial1Type === 4 && ((wonderbetSlots.dial2Type === 3 && wonderbetSlots.dial3Type === 5) || (wonderbetSlots.dial2Type === 5 && wonderbetSlots.dial3Type === 3)))
+            || wonderbetSlots.dial1Type === 5 && wonderbetSlots.dial2Type === 3 && wonderbetSlots.dial3Type === 4){
 
       winningsMultiple = 15;
     }
-    else if (EOSBetSlots.dial1Type === 5 && EOSBetSlots.dial2Type === 5 && EOSBetSlots.dial3Type === 5){
+    else if (wonderbetSlots.dial1Type === 5 && wonderbetSlots.dial2Type === 5 && wonderbetSlots.dial3Type === 5){
       winningsMultiple = 10;
     }
-    else if (EOSBetSlots.dial1Type >= 3 && EOSBetSlots.dial1Type <= 5 && EOSBetSlots.dial2Type >= 3 && EOSBetSlots.dial2Type <= 5 && EOSBetSlots.dial3Type >= 3 && EOSBetSlots.dial3Type <= 5){
+    else if (wonderbetSlots.dial1Type >= 3 && wonderbetSlots.dial1Type <= 5 && wonderbetSlots.dial2Type >= 3 && wonderbetSlots.dial2Type <= 5 && wonderbetSlots.dial3Type >= 3 && wonderbetSlots.dial3Type <= 5){
       winningsMultiple = 3;
     }
-    else if ((EOSBetSlots.dial1Type === 0 || EOSBetSlots.dial1Type === 3) && (EOSBetSlots.dial2Type === 0 || EOSBetSlots.dial2Type === 3) && (EOSBetSlots.dial3Type === 0 || EOSBetSlots.dial3Type === 3)){
+    else if ((wonderbetSlots.dial1Type === 0 || wonderbetSlots.dial1Type === 3) && (wonderbetSlots.dial2Type === 0 || wonderbetSlots.dial2Type === 3) && (wonderbetSlots.dial3Type === 0 || wonderbetSlots.dial3Type === 3)){
       winningsMultiple = 3;
     }
-    else if ((EOSBetSlots.dial1Type === 1 || EOSBetSlots.dial1Type === 4) && (EOSBetSlots.dial2Type === 1 || EOSBetSlots.dial2Type === 4) && (EOSBetSlots.dial3Type === 1 || EOSBetSlots.dial3Type === 4)){
+    else if ((wonderbetSlots.dial1Type === 1 || wonderbetSlots.dial1Type === 4) && (wonderbetSlots.dial2Type === 1 || wonderbetSlots.dial2Type === 4) && (wonderbetSlots.dial3Type === 1 || wonderbetSlots.dial3Type === 4)){
       winningsMultiple = 2;
     }
-    else if ((EOSBetSlots.dial1Type === 2 || EOSBetSlots.dial1Type === 5) && (EOSBetSlots.dial2Type === 2 || EOSBetSlots.dial2Type === 5) && (EOSBetSlots.dial3Type === 2 || EOSBetSlots.dial3Type === 5)){
+    else if ((wonderbetSlots.dial1Type === 2 || wonderbetSlots.dial1Type === 5) && (wonderbetSlots.dial2Type === 2 || wonderbetSlots.dial2Type === 5) && (wonderbetSlots.dial3Type === 2 || wonderbetSlots.dial3Type === 5)){
       winningsMultiple = 2;
     }
-    else if (EOSBetSlots.dial1Type === 6 && EOSBetSlots.dial2Type === 6 && EOSBetSlots.dial3Type === 6){
+    else if (wonderbetSlots.dial1Type === 6 && wonderbetSlots.dial2Type === 6 && wonderbetSlots.dial3Type === 6){
       winningsMultiple = 1;
     }
 
-    var winningsEther = EOSBetSlots.betPerCredit.times(winningsMultiple);
+    var winningsEther = wonderbetSlots.betPerCredit.times(winningsMultiple);
 
     // add to total profit
-    EOSBetSlots.totalProfit = EOSBetSlots.totalProfit.add(winningsEther);
+    wonderbetSlots.totalProfit = wonderbetSlots.totalProfit.add(winningsEther);
 
     if (winningsMultiple > 0){
       $('#score-pop').text('\u25CA' + winningsEther.toString().slice(0, 9)).show().animate({bottom: '70%', fontSize: '800%'}, 2000, () => {
@@ -474,25 +474,25 @@ const EOSBetSlots = {
     var cssColor;
     winningsMultiple > 0 ? cssColor = {color: 'green'} : cssColor = {color: 'red'};
 
-    updateTicker(EOSBetSlots.onCredit, EOSBetSlots.credits, EOSBetSlots.totalProfit, cssColor);
+    updateTicker(wonderbetSlots.onCredit, wonderbetSlots.credits, wonderbetSlots.totalProfit, cssColor);
 
     // roll has resolved, so increment the credits
-    EOSBetSlots.onCredit += 1;
+    wonderbetSlots.onCredit += 1;
 
     // possibly end game if out of credits
-    if (EOSBetSlots.onCredit > EOSBetSlots.credits){
+    if (wonderbetSlots.onCredit > wonderbetSlots.credits){
 
       setTimeout(() => {
         $('#spin-bets').hide();
 
         // bring back the stats and the buy box
-        EOSBetSlots.getPlayerDetails(web3);
+        wonderbetSlots.getPlayerDetails(web3);
         $('#place-bets').show();
         $('#address-balance-stats').show();
 
         $('#spin-wheel').removeClass('disabled');
         $('#spin-wheel').click(() => {
-          EOSBetSlots.spinWheel();
+          wonderbetSlots.spinWheel();
         });
       }, 5000);
     }
@@ -500,7 +500,7 @@ const EOSBetSlots = {
     else {
       $('#spin-wheel').removeClass('disabled');
       $('#spin-wheel').click(() => {
-        EOSBetSlots.spinWheel();
+        wonderbetSlots.spinWheel();
       });
     }
   },
@@ -511,8 +511,8 @@ function updateTicker(onRoll, totalRolls, currentProfit, cssColor){
   $('#spins-remaining').css(cssColor);
   $('#total-profit').css(cssColor);
 
-  $('#spins-remaining').text((EOSBetSlots.credits - EOSBetSlots.onCredit).toString());
-  $('#total-profit').text(EOSBetSlots.totalProfit.toString().slice(0, 8));
+  $('#spins-remaining').text((wonderbetSlots.credits - wonderbetSlots.onCredit).toString());
+  $('#total-profit').text(wonderbetSlots.totalProfit.toString().slice(0, 8));
 
   setTimeout(() => {
     $('#spins-remaining').css({color: 'white'});
@@ -522,7 +522,7 @@ function updateTicker(onRoll, totalRolls, currentProfit, cssColor){
 
 $(document).ready(function(){
   initUI();
-  EOSBetSlots.init();
+  wonderbetSlots.init();
 });
 
 // global var for the slider
@@ -548,14 +548,14 @@ function initUI(){
 
   // max and min buttons
   $('#max-bet-per-spin-btn').click(function(){
-    var maxBet = EOSBetSlots.calculateMaxBet();
+    var maxBet = wonderbetSlots.calculateMaxBet();
     $('#bet-per-spin').val(web3.fromWei(maxBet, 'ether'));
 
     updateTotalBet(null);
   });
 
   $('#min-bet-per-spin-btn').click(function(){
-    var minBetPerSpin = EOSBetSlots.calculateMinBetPerSpin();
+    var minBetPerSpin = wonderbetSlots.calculateMinBetPerSpin();
     $('#bet-per-spin').val(web3.fromWei(minBetPerSpin, 'ether'));
 
     updateTotalBet(null);
@@ -563,7 +563,7 @@ function initUI(){
 
   // double and half bet buttons
   $('#double-bet-per-spin-btn').click(function(){
-    var maxBet = EOSBetSlots.calculateMaxBet();
+    var maxBet = wonderbetSlots.calculateMaxBet();
     var doubleBet = new BigNumber(web3.toWei($('#bet-per-spin').val(), 'ether')).times(2);
 
     if (maxBet.lessThan(doubleBet)){
@@ -577,7 +577,7 @@ function initUI(){
   });
 
   $('#half-bet-per-spin-btn').click(function(){
-    var minBetPerSpin = EOSBetSlots.calculateMinBetPerSpin();
+    var minBetPerSpin = wonderbetSlots.calculateMinBetPerSpin();
     var halfBet = new BigNumber(web3.toWei($('#bet-per-spin').val(), 'ether')).dividedBy(2);
 
     if (minBetPerSpin.greaterThan(halfBet)){
@@ -607,7 +607,7 @@ function updateTotalBet(numSpins){
 
   var totalBet = betPerSpin * numSpins;
 
-  if (totalBet < parseFloat(web3.fromWei(EOSBetSlots.calculateMinBetPerTx(), "ether"))){
+  if (totalBet < parseFloat(web3.fromWei(wonderbetSlots.calculateMinBetPerTx(), "ether"))){
     $('#total-bet').html('<text style="color:red !important;">' + totalBet.toString().slice(0, 7) + '</text>');
   }
   else {

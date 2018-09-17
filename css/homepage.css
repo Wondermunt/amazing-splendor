@@ -65,12 +65,12 @@ section{
 	color: #FFFFFF;
 	text-align: center;
 }
-#what-is-eosbetio{
+#what-is-wonderbetio{
 	background: url("../img/dice/Background @1x.png") no-repeat;
 	background-color: black;
 	text-align: center;
 }
-#splash, #bankroll-features, #casino-features, #what-is-eosbetio{
+#splash, #bankroll-features, #casino-features, #what-is-wonderbetio{
 	background-size: cover;
   	background-position: center center;
   	height: 100%;
@@ -228,9 +228,9 @@ section{
 
 /*end games and bankroll section of the homepage*/
 
-/*what is eosbet.io section*/
+/*what is wonderbet.io section*/
 
-/*end what is eosbet.io section*/
+/*end what is wonderbet.io section*/
 
 /*airdrop and crowdsale section of the homepage*/
 
